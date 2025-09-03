@@ -16,7 +16,7 @@ from serverchan_sdk import sc_send
 SCKEY = os.getenv("SCKEY")
 DB_PATH = 'vulns.db'  # 数据库文件路径
 LOG_FILE = 'cveflows.log'  # 日志文件前缀
-CVSS_THRESHOLD = 7.0  # 只关注CVSS>=7.0的高危漏洞
+CVSS_THRESHOLD = 9.0  # 只关注CVSS>=7.0的高危漏洞
 
 # 日志配置
 logger = logging.getLogger("CVEFlows")
@@ -245,3 +245,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
