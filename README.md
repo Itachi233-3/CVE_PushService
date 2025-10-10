@@ -61,7 +61,6 @@
 </p>
 <p align = "center"> 
 <img src="https://github.com/hijack1r/CVE_PushService/blob/main/images/6.jpg" align = “middle”  width="46%" />
-<img src="https://github.com/hijack1r/CVE_PushService/blob/main/images/0.jpg" align = “middle”  width="50%" />
 </p>
 
 ### 注意
@@ -97,6 +96,7 @@
 - 感谢 [Server酱3](https://sc3.ft07.com/) 提供稳定的消息推送服务。
 - 感谢 [NVD](https://nvd.nist.gov/) 提供权威的漏洞情报源。
 - 翻译由 **有道开放平台** 提供。
+
 
 
 
