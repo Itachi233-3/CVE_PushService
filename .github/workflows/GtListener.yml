@@ -1,0 +1,43 @@
+name: Github CVE Listener
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install requests serverchan-sdk
+
+    - name: Download previous database
+      uses: actions/download-artifact@v4
+      continue-on-error: true
+      with:
+        name: cve-database
+        path: ./
+
+    - name: Run CVE Monitor
+      env:
+        SCKEY: ${{ secrets.SCKEY }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: python monitor.py
+
+    - name: Upload database as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cve-database
+        path: Github_CVE_Monitor.db
+        retention-days: 7
