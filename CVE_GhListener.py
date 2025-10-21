@@ -10,18 +10,15 @@ import utils
 import logging
 from serverchan_sdk import sc_send
 
-# 从环境变量获取敏感信息
 SCKEY = os.getenv("SCKEY")
 GH_TOKEN = os.getenv('GH_TOKEN')
 DB_PATH = "Github_CVE_Monitor.db"
 LOG_FILE = 'Ghflows.log'  # 日志文件前缀
 CVE_REGEX = re.compile(r"(CVE-\d{4}-\d{4,7})", re.IGNORECASE)
 
-# 日志配置
 logger = logging.getLogger("Ghflows")
 logger.setLevel(logging.INFO)
 
-# 给翻译函数添加时间延迟
 def translate(text,delay_seconds):
     url = 'https://aidemo.youdao.com/trans'
     try:
@@ -230,4 +227,5 @@ def main():
         send_notification(repo)
 
 if __name__ == "__main__":
+
     main()
