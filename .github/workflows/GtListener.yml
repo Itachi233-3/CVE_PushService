@@ -33,7 +33,7 @@ jobs:
       env:
         SCKEY: ${{ secrets.SCKEY }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: python monitor.py
+      run: python CVE_GhListener.py
 
     - name: Upload database as artifact
       uses: actions/upload-artifact@v4
