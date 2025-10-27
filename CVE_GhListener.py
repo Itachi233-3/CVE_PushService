@@ -10,15 +10,18 @@ import utils
 import logging
 from serverchan_sdk import sc_send
 
+# 从环境变量获取敏感信息
 SCKEY = os.getenv("SCKEY")
 GH_TOKEN = os.getenv('GH_TOKEN')
 DB_PATH = "Github_CVE_Monitor.db"
 LOG_FILE = 'Ghflows.log'  # 日志文件前缀
 CVE_REGEX = re.compile(r"(CVE-\d{4}-\d{4,7})", re.IGNORECASE)
 
+# 日志配置
 logger = logging.getLogger("Ghflows")
 logger.setLevel(logging.INFO)
 
+# 给翻译函数添加时间延迟
 def translate(text,delay_seconds):
     url = 'https://aidemo.youdao.com/trans'
     try:
@@ -117,16 +120,19 @@ def fetch_github_repositories() -> Optional[Dict]:
     """从GitHub API获取CVE相关仓库"""
     year = utils.get_current_year()
     api_url = f"https://api.github.com/search/repositories?q=CVE-{year}&sort=updated&order=desc"
-    headers = {"Authorization": f"Bearer {GH_TOKEN}"}
+    # 仅在提供 GH_TOKEN 时添加认证头，避免无效的 Bearer None 导致 401
+    headers = {}
+    if GH_TOKEN:
+        headers["Authorization"] = f"Bearer {GH_TOKEN}"
 
     try:
         response = requests.get(api_url, headers=headers)
+
         response.raise_for_status()
 
         return response.json()
     except requests.exceptions.RequestException as e:
         logger.error(f"Failed to fetch data from GitHub: {str(e)}")
-        return None
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return None
@@ -215,17 +221,12 @@ GitHub
 
 
 def main():
-    """主函数"""
-    # 初始化数据库
     init_db()
 
-    # 处理新仓库
     new_repos = process_new_repositories()
 
-    # 发送通知
     for repo in new_repos:
         send_notification(repo)
 
 if __name__ == "__main__":
-
     main()
