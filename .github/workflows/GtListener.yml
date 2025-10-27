@@ -27,9 +27,11 @@ jobs:
       continue-on-error: true
       with:
         name: cve-database
-        path: ./
+        path: ./CVE_PushService
+        if-no-artifact-found: warn
 
     - name: Run CVE Monitor
+      working-directory: ./CVE_PushService
       env:
         SCKEY: ${{ secrets.SCKEY }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -39,5 +41,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: cve-database
-        path: Github_CVE_Monitor.db
+        path: CVE_PushService/Github_CVE_Monitor.db
         retention-days: 7
