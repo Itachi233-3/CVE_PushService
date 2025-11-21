@@ -3,7 +3,7 @@ import sqlite3
 import json
 import re
 import datetime
-from ..pkg.utils import *
+from pkg.utils import *
 from typing import List, Dict, Optional
 import logging
 from serverchan_sdk import sc_send
