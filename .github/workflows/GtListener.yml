@@ -35,6 +35,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         ls -la  # Debug: List files in current directory
+        cd cmd
         python CVE_GhListener.py
 
     - name: Upload database as artifact
