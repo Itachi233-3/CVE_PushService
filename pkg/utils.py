@@ -9,17 +9,18 @@ def get_current_year():
     return datetime.now().year
 
 def get_cve_overview(cve_id: str) -> str:
-    """通过CVE API获取CVE的概述信息"""
+    """通过CVE API获取CVE的描述信息"""
     try:
         url = f"https://cve.circl.lu/api/cve/{cve_id}"
         response = requests.get(url)
         response.raise_for_status()
 
         data = response.json()
-        if 'summary' in data:
-            return data['summary']
+        if 'descriptions' in data and len(data['descriptions']) > 0:
+            return data['descriptions'][0]['value']
         else:
-            return "No overview available for this CVE."
+            return "No description available for this CVE."
+
     except requests.exceptions.RequestException as e:
         logging.error(f"Failed to fetch CVE overview for {cve_id}: {str(e)}")
         return "Error fetching CVE overview."
@@ -37,4 +38,5 @@ def translate(text, delay_seconds):
                 time.sleep(delay_seconds)
     except Exception:
         logging.warning("Error translating message!")
+
     return text
