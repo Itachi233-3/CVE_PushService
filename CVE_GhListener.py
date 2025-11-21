@@ -262,7 +262,7 @@ def main():
     init_db()
 
     # 加载template目录下的github_repo.md模板
-    template_path = os.path.join(os.path.dirname(__file__), '..', 'template', 'github_repo.md')
+    template_path = os.path.join(os.path.dirname(__file__), 'template', 'github_repo.md')
     template = load_template(template_path)
 
     # 处理新仓库
