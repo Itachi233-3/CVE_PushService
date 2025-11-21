@@ -3,7 +3,7 @@ import sqlite3
 import json
 import re
 import datetime
-from ..pkg.utils import *
+from pkg.utils import *
 from typing import List, Dict, Optional
 import logging
 from serverchan_sdk import sc_send
@@ -262,7 +262,7 @@ def main():
     init_db()
 
     # 加载template目录下的github_repo.md模板
-    template_path = os.path.join(os.path.dirname(__file__), '..', 'template', 'github_repo.md')
+    template_path = os.path.join(os.path.dirname(__file__), 'template', 'github_repo.md')
     template = load_template(template_path)
 
     # 处理新仓库
