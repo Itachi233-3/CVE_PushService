@@ -15,11 +15,15 @@ DB_PATH = "Github_CVE_Monitor.db"
 LOG_FILE = 'Ghflows.log'  # 日志文件前缀
 CVE_REGEX = re.compile(r"(CVE-\d{4}-\d{4,7})", re.IGNORECASE)
 
+# 日志配置
+logger = logging.getLogger("Ghflows")
+logger.setLevel(logging.INFO)
+
 # 加载黑名单配置
 def load_blacklist():
     """从外部 JSON 文件加载黑名单"""
     try:
-        with open("blacklist.json", "r") as file:
+        with open(os.path.join(os.path.abspath(__file__),"configs","blacklist.json"), "r") as file:
             blacklist = json.load(file)
         return blacklist
     except Exception as e:
@@ -31,10 +35,6 @@ def load_blacklist():
         }
 
 BLACKLIST = load_blacklist()
-
-# 日志配置
-logger = logging.getLogger("Ghflows")
-logger.setLevel(logging.INFO)
 
 # 模板加载函数
 def load_template(file_path: str) -> str:
