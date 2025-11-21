@@ -2,7 +2,7 @@ name: Github CVE Listener
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -35,7 +35,6 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         ls -la  # Debug: List files in current directory
-        cd cmd
         python CVE_GhListener.py
 
     - name: Upload database as artifact
