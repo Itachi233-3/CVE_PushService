@@ -23,7 +23,7 @@ logger.setLevel(logging.INFO)
 def load_blacklist():
     """从外部 JSON 文件加载黑名单"""
     try:
-        with open(os.path.join(os.path.abspath(__file__),"configs","blacklist.json"), "r") as file:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"configs","blacklist.json"), "r") as file:
             blacklist = json.load(file)
         return blacklist
     except Exception as e:
@@ -237,7 +237,7 @@ def send_notification(repo_info: Dict, template: str):
         cve_overviews.append(overview)
 
     # 使用模板替换参数 添加CVE概述
-    cve_overviews_text = "\n\n".join(cve_overviews)
+    # cve_overviews_text = "\n\n".join(cve_overviews)
     message = template.format(
         name=repo_info['name'],
         cve_ids=', '.join(repo_info['cve_ids']) if repo_info['cve_ids'] else '未检测到CVE ID',
@@ -245,7 +245,7 @@ def send_notification(repo_info: Dict, template: str):
         created_at=repo_info['created_at'],
         description=translate(repo_info['description'],5),
         url=repo_info['url'],
-        cve_overviews = cve_overviews_text
+        cve_overviews = repo_info['cve_overviews']
     )
 
     title = f"漏洞仓库: {repo_info['name']}"
