@@ -245,7 +245,7 @@ def send_notification(repo_info: Dict, template: str):
         created_at=repo_info['created_at'],
         description=translate(repo_info['description'],5),
         url=repo_info['url'],
-        cve_overviews = repo_info['cve_overviews']
+        cve_overviews = cve_overviews
     )
 
     title = f"漏洞仓库: {repo_info['name']}"
