@@ -278,7 +278,7 @@ def send_notification(repo_info: Dict, template: str, delaytime: int):
         created_at=repo_info['created_at'],
         description=translate(repo_info['description'],5),
         url=repo_info['url'],
-        cve_overviews=', '.join(repo_info['cve_ids']) + '\n:' + translate('\n'.join(cve_overviews), 6) if repo_info.get(
+        cve_overviews=', '.join(repo_info['cve_ids']) + '\n\n:' + translate('\n'.join(cve_overviews), 6) if repo_info.get(
             'cve_ids') else '未找到该漏洞概述'
     )
 
