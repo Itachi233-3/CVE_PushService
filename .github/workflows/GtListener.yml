@@ -2,7 +2,7 @@ name: Github CVE Listener
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */1 * * *'
   workflow_dispatch:
 
 jobs:
@@ -28,6 +28,13 @@ jobs:
       with:
         name: cve-database
         path: ./
+
+    - name: Check if database exists, otherwise create it
+      run: |
+        if [ ! -f "Github_CVE_Monitor.db" ]; then
+          echo "No previous database found. Creating a new one."
+          touch Github_CVE_Monitor.db  # 创建一个空的数据库文件
+        fi
 
     - name: Run CVE Monitor
       env:
