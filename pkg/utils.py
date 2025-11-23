@@ -8,6 +8,7 @@ def get_current_year():
     """获取当前年份"""
     return datetime.now().year
 
+
 def get_cve_overview(cve_id: str) -> str:
     """通过CVE API获取CVE的英文描述信息"""
     try:
@@ -16,14 +17,13 @@ def get_cve_overview(cve_id: str) -> str:
         response.raise_for_status()  # 确保请求成功
 
         data = response.json()
-        
+
         # 精确匹配，查找包含在 "containers" -> "cna" -> "problemTypes" -> "descriptions" 中的英文描述
         if 'containers' in data and 'cna' in data['containers']:
             for problem_type in data['containers']['cna'].get('problemTypes', []):
                 for description in problem_type.get('descriptions', []):
-                    if description.get('lang') == 'en-US':  # 只选择英文描述
-                        return description.get('description', "No description available for this CVE.")
-        
+                    return description.get('description', "No description available for this CVE.")
+
         return "No English description available for this CVE."
 
     except requests.exceptions.RequestException as e:
@@ -43,6 +43,4 @@ def translate(text, delay_seconds):
                 time.sleep(delay_seconds)
     except Exception:
         logging.warning("Error translating message!")
-
     return text
-
