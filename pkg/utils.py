@@ -18,11 +18,10 @@ def get_cve_overview(cve_id: str) -> str:
 
         data = response.json()
 
-        # 精确匹配，查找包含在 "containers" -> "cna" -> "problemTypes" -> "descriptions" 中的英文描述
+        # 匹配漏洞描述，查找包含在 "containers" -> "cna" -> "descriptions"
         if 'containers' in data and 'cna' in data['containers']:
-            for problem_type in data['containers']['cna'].get('problemTypes', []):
-                for description in problem_type.get('descriptions', []):
-                    return description.get('description', "No description available for this CVE.")
+            for description in data['containers']['cna'].get('descriptions', []):
+                return description.get('value', "No description available for this CVE.")
 
         return "No English description available for this CVE."
 
