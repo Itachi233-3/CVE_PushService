@@ -43,3 +43,13 @@ def translate(text, delay_seconds):
     except Exception:
         logging.warning("Error translating message!")
     return text
+
+# 模板加载函数
+def load_template(file_path: str) -> str:
+    """加载通知模板"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        logging.error(f"Error loading template from {file_path}: {str(e)}")
+        return ""
