@@ -5,6 +5,9 @@ on:
     - cron: '0 23 * * *'   # 每天 23 点执行（UTC 时间）（实测执行时间可能会因为GitHub Actions的队列延迟而延后，如果在东八区，相当于北京时间上午 7-8 点，一个小时左右属于正常的波动范围）
   workflow_dispatch:       # 手动触发
 
+permissions:
+  contents: write          # 需要写权限来提交文件
+
 jobs:
   run-cveflows:
     runs-on: ubuntu-latest
@@ -22,13 +25,16 @@ jobs:
         run: |
           pip install requests
           pip install serverchan-sdk
-          
-      - name: Download previous DB
-        uses: actions/download-artifact@v4
-        with:
-          name: vulns-db
-          path: .  # 下载到工作目录
-        continue-on-error: true  # 首次运行时忽略错误
+
+      # 检查数据库文件是否存在（checkout 时会自动获取仓库中的文件）
+      - name: Check database status
+        run: |
+          if [ -f vulns.db ]; then
+            echo "Database exists, will be updated."
+            ls -la vulns.db
+          else
+            echo "Database does not exist, will be created."
+          fi
 
       - name: Run CVE Push Service script
         env:
@@ -55,10 +61,12 @@ jobs:
         with:
           name: cveflows-log
           path: cveflows.log
-
-      - name: Upload updated DB
-        uses: actions/upload-artifact@v4
-        with:
-          name: vulns-db
-          path: vulns.db  # 上传当前数据库
           retention-days: 7
+
+      # 提交数据库更改到仓库
+      - name: Commit database changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add vulns.db
+          git diff --staged --quiet || (git commit -m "Update vulnerability database [skip ci]" && git push)
