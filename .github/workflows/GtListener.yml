@@ -2,8 +2,11 @@ name: Github CVE Listener
 
 on:
   schedule:
-    - cron: '0 */1 * * *'
+    - cron: '0 */3 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   monitor:
@@ -22,31 +25,17 @@ jobs:
       run: |
         pip install requests serverchan-sdk
 
-    - name: Download previous database
-      uses: actions/download-artifact@v4
-      continue-on-error: true
-      with:
-        name: cve-database
-        path: ./
-
-    - name: Check if database exists, otherwise create it
-      run: |
-        if [ ! -f "Github_CVE_Monitor.db" ]; then
-          echo "No previous database found. Creating a new one."
-          touch Github_CVE_Monitor.db  # 创建一个空的数据库文件
-        fi
-
     - name: Run CVE Monitor
       env:
         SCKEY: ${{ secrets.SCKEY }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        ls -la  # Debug: List files in current directory
+        ls -la
         python CVE_GhListener.py
 
-    - name: Upload database as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: cve-database
-        path: Github_CVE_Monitor.db
-        retention-days: 7
+    - name: Commit database changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add Github_CVE_Monitor.db
+        git diff --staged --quiet || (git commit -m "Update CVE database" && git push)
