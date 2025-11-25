@@ -4,12 +4,19 @@
 
   <img src="https://img.shields.io/github/stars/hijack1r/CVE_PushService?color=yellow&logo=riseup&logoColor=yellow&style=flat-square"></a>
   <img src="https://img.shields.io/github/forks/hijack1r/CVE_PushService?color=purple&style=flat-square"></a>
-  <img src="https://img.shields.io/badge/CVE-PushService-blue?logo=datadog" alt="CVE Monitor">
+  [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-自动化-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/hijack1r/CVE_PushService)
 
 </p>
 
 > ⚡ 面向网络安全从业者的 **漏洞实时情报推送工具**  
 > 包含实时监控多种漏洞相关的功能，并通过 **[Server酱3](https://sc3.ft07.com/)** 第一时间推送到您的设备，帮助您在应急响应与漏洞研究等场合中抢占先机。  
+
+
+<div align="left">
+
+**中文** | **[English](README-EN.md)**
+
+</div>
 
 ---
 
@@ -85,8 +92,8 @@
 - 其他新更新的功能重复上述操作即可，随着功能的增加后续考虑将所有功能合并，避免操作繁琐。
 - 推推送效果示例：
 
-![5.png](images/5.png)
-![6.jpg](images/6.jpg)
+
+<img src="images/9.jpg" alt="Push Example 2" width="100%">
 
 
 ### 注意
@@ -135,3 +142,4 @@
 - 感谢 [Server酱3](https://sc3.ft07.com/) 提供稳定的消息推送服务。
 - 感谢 [NVD](https://nvd.nist.gov/) 提供权威的漏洞情报源。
 - 翻译由 **有道开放平台** 提供。
+
