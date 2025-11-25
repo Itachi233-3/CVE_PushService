@@ -13,7 +13,7 @@
 
 <div align="left">
 
-**Chinese** | **[English](README-EN.md)**
+**[Chinese](README.md)** | **English**
 
 </div>
 
