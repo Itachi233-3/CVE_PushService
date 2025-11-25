@@ -14,7 +14,7 @@
 
 <div align="left">
 
-**中文** | **[English](README-EN.md)**
+**中文** | **[English](README_EN.md)**
 
 </div>
 
@@ -142,4 +142,5 @@
 - 感谢 [Server酱3](https://sc3.ft07.com/) 提供稳定的消息推送服务。
 - 感谢 [NVD](https://nvd.nist.gov/) 提供权威的漏洞情报源。
 - 翻译由 **有道开放平台** 提供。
+
 
