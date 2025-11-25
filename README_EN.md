@@ -93,6 +93,40 @@ You only need to configure the following variables in the repository Settings �
 
 <img src="images/9.jpg" alt="Push Example 2" width="100%">
 
+<details>
+<summary>⚠️ <strong>If you wish to use English template: Please modify the following code. </strong></summary>
+<br>
+
+1. Please find the following location in the source code, and modify the template names as `github_CVE_en.md` and `nvd_CVE_en.md`. The corresponding templates have been attached to the `template` folder in this project.
+
+```python
+def main():
+    ...
+    template_path = os.path.join(os.path.dirname(__file__), 'template', 'nvd_cve.md')
+    template = load_template(template_path)
+    ...
+```
+
+2. Find the following location in the source code and delete the `translate` function call in `message`.
+
+```python
+def send_notification(vuln_info, template: str, delaytime: int):
+    ...
+    message = template.format(
+        cve_id=vuln_info['id'],
+        cvss_score=vuln_info['cvss_score'],
+        published_date=vuln_info['published_date'],
+        vector_string=vuln_info['vector_string'],
+        description=translate(vuln_info['description'], 3),
+        url=vuln_info['refs'],
+        source=vuln_info['source']
+    )
+    ...
+```
+
+</details>
+
+
 ### Notes
 
 - By default, the system automatically detects new high-risk vulnerabilities every day at UTC 0:00 **(Beijing Time 8:00)** for the past 24 hours. If you want to modify this, you can change it in `AutoCVE.yml`. Actual execution time: approximately 8:00~8:30 AM Beijing time (subject to GitHub queue).
@@ -112,6 +146,18 @@ You only need to configure the following variables in the repository Settings �
 ## 📅 Changelog
 
 > 👨🏻‍🔧 Regular updates. If you have suggestions or issues, please create an issue, and we will implement and optimize as soon as possible.
+
+### 2025/11/25 - v1.1.2
+
+- Add English template and README
+
+### 2025/11/24 - v1.1.1
+
+- Optimized CVE ID recognition
+- Optimized database storage method to **resolve duplicate submission issues**
+- Addressed inaccuracies in vulnerability description recognition
+- Optimized push notification template formatting
+- Improved Chinese-English translation quality
 
 ### 2025/11/21 - v1.1.0
 
