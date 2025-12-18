@@ -1,6 +1,6 @@
 # coding=utf-8
 import sys
-
+from pkg.utils import *
 import requests
 import json
 import os
@@ -54,24 +54,6 @@ def init_db():
                   source TEXT)''')
     conn.commit()
     conn.close()
-
-# 获取当前年份
-def get_current_year():
-    return datetime.now().year
-
-# 有道翻译API
-def translate(text):
-    url = 'https://aidemo.youdao.com/trans'
-    try:
-        data = {"q": text, "from": "auto", "to": "zh-CHS"}
-        resp = requests.post(url, data, timeout=15)
-        if resp is not None and resp.status_code == 200:
-            respJson = resp.json()
-            if "translation" in respJson:
-                return "\n".join(str(i) for i in respJson["translation"])
-    except Exception:
-        logger.warning("Error translating message!")
-    return text
 
 # 从NVD获取CVE数据
 def fetch_nvd_data(use_recent=True):
@@ -177,29 +159,27 @@ def save_vuln(vuln_info):
         conn.close()
 
 # 通过Server酱发送通知
-def send_notification(vuln_info):
+def send_notification(vuln_info, template: str, delaytime: int):
+
+    if delaytime > 0:
+        logger.info(f"Wait {delaytime} seconds before sending the notification. ...")
+        time.sleep(delaytime)
+
+
+    message = template.format(
+        cve_id=vuln_info['id'],
+        cvss_score=vuln_info['cvss_score'],
+        published_date=vuln_info['published_date'],
+        vector_string=vuln_info['vector_string'],
+        description=translate(vuln_info['description'], 3),
+        url=vuln_info['refs'],
+        source=vuln_info['source']
+    )
+
     title = f"高危漏洞: {vuln_info['id']} ({vuln_info['cvss_score']})"
 
-    translated_description = translate(vuln_info['description'])
-
-    desp = f"""
-## 漏洞详情
-**CVE ID**: {vuln_info['id']}  
-**发布时间**: {vuln_info['published_date']}  
-**CVSS分数**: {vuln_info['cvss_score']}  
-**攻击向量**: {vuln_info['vector_string']}  
-
-## 漏洞描述
-{translated_description}
-
-## 相关链接
-{vuln_info['refs']}
-
-## 来源
-{vuln_info['source']}
-"""
     try:
-        response = sc_send(SCKEY, title, desp, {"tags": "漏洞警报"})
+        response = sc_send(SCKEY, title, message, {"tags": "🚨漏洞警报"})
         logger.info(f"Notification sent for {vuln_info['id']}, response: {response}")
     except Exception as e:
         logger.error(f"Failed to send notification: {str(e)}")
@@ -209,6 +189,10 @@ def main():
     logger.info("Starting CVE monitoring...")
 
     init_db()
+
+    # 加载template目录下的nvd_cve.md模板
+    template_path = os.path.join(os.path.dirname(__file__), 'template', 'nvd_cve.md')
+    template = load_template(template_path)
 
     logger.info("Fetching recent CVE data...")
     cve_items = fetch_nvd_data(use_recent=True)
@@ -230,7 +214,7 @@ def main():
         if vuln_info and is_new_vuln(vuln_info):
             logger.info(f"[INFO] New high-risk vulnerability found: {vuln_info['id']}")
             save_vuln(vuln_info)
-            send_notification(vuln_info)
+            send_notification(vuln_info,template,3)
             new_vulns += 1
             new_ids.append(vuln_info['id'])
 
