@@ -5,6 +5,7 @@ import requests
 import json
 import os
 import gzip
+import lzma
 import io
 import sqlite3
 import logging
@@ -55,22 +56,21 @@ def init_db():
     conn.commit()
     conn.close()
 
-# 从NVD获取CVE数据
+# 从NVD获取CVE数据（数据源：fkie-cad/nvd-json-data-feeds，社区重建的 NVD JSON Data Feeds）
 def fetch_nvd_data(use_recent=True):
     if use_recent:
-        url = "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-recent.json.gz"
+        url = "https://github.com/fkie-cad/nvd-json-data-feeds/releases/latest/download/CVE-recent.json.xz"
     else:
         year = get_current_year()
-        url = f"https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-{year}.json.gz"
+        url = f"https://github.com/fkie-cad/nvd-json-data-feeds/releases/latest/download/CVE-{year}.json.xz"
 
     try:
         logger.info(f"Fetching data from: {url}")
-        response = requests.get(url, stream=True, timeout=15)
+        response = requests.get(url, stream=True, timeout=30, allow_redirects=True)
         response.raise_for_status()
 
-        with gzip.GzipFile(fileobj=io.BytesIO(response.content)) as gz_file:
-            data = json.loads(gz_file.read().decode('utf-8'))
-            return data.get('vulnerabilities', [])
+        data = json.loads(lzma.decompress(response.content).decode('utf-8'))
+        return [{'cve': item} for item in data.get('cve_items', [])]
     except Exception as e:
         logger.error(f"Failed to fetch NVD data: {str(e)}")
         return []
